@@ -21,6 +21,6 @@ const PawnBlackValidMoves = (position) => {
   possible_coordinates.forEach((coordinate) => {
     validDest.push(CoordinateToIndex(coordinate));
   });
+  return validDest;
 };
-PawnBlackValidMoves(55);
 module.exports = PawnBlackValidMoves;

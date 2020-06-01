@@ -32,7 +32,7 @@ const QueenValidMoves = (position) => {
   possible_coordinates.forEach((coordinate) => {
     validDest.push(CoordinateToIndex(coordinate));
   });
+  return validDest;
 };
 
-QueenValidMoves(0);
 module.exports = QueenValidMoves;

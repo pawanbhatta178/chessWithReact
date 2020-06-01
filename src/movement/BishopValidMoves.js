@@ -26,6 +26,7 @@ const BishopValidMoves = (position) => {
   possible_coordinates.forEach((coordinate) => {
     validDest.push(CoordinateToIndex(coordinate));
   });
+  return validDest;
 };
-BishopValidMoves(36);
+
 module.exports = BishopValidMoves;

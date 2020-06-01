@@ -1,5 +1,12 @@
 import React, { useState } from "react";
 import Board from "./Board";
+const KingValidMoves = require("../movement/KingValidMoves");
+const KnightValidMoves = require("../movement/KnightValidMoves");
+const QueenValidMoves = require("../movement/QueenValidMoves");
+const BishopValidMoves = require("../movement/BishopValidMoves");
+const PawnBlackValidMoves = require("../movement/PawnBlackValidMoves");
+const PawnWhiteValidMoves = require("../movement/PawnWhiteValidMoves");
+const RookValidMoves = require("../movement/RookValidMoves");
 
 const styles = {
   width: "200px",
@@ -38,6 +45,8 @@ const Game = () => {
   const [shade, setShade] = useState(false);
   const [turn, setTurn] = useState("black");
   const [clicks, setClicks] = useState({ firstClick: "", secondClick: "" });
+  const [selected, setSelected] = useState({ selected: "" });
+  const [dead, setDead] = useState({ demised: [] });
   const [configuration, setConfig] = useState({
     config: [
       [0, "Rook", "black", "br1"],
@@ -75,21 +84,39 @@ const Game = () => {
     ],
   });
 
-  /*const selectPiece = (i) => {
-    const { config } = configuration;
-    let clickedOnPiece = null;
-    const selectedPiece = config.map((conf) => {
-      if (conf[0] === i && conf[2] === turn) {
-        conf[4] = true;
-        clickedOnPiece = i;
-      }
-      return conf;
-    });
-    console.log(selectedPiece);
-    return clickedOnPiece;
+  const FinalizeMove = (firstClick, secondClick, type, color) => {
+    let possibleMoves = [];
+
+    switch (type) {
+      case "Knight":
+        possibleMoves = KnightValidMoves(firstClick);
+        break;
+      case "King":
+        possibleMoves = KingValidMoves(firstClick);
+        break;
+      case "Queen":
+        possibleMoves = QueenValidMoves(firstClick);
+        break;
+      case "Bishop":
+        possibleMoves = BishopValidMoves(firstClick);
+        break;
+      case "Rook":
+        possibleMoves = RookValidMoves(firstClick);
+        break;
+      case "Pawn":
+        if (color === "black") {
+          possibleMoves = PawnBlackValidMoves(firstClick);
+          break;
+        } else {
+          possibleMoves = PawnWhiteValidMoves(firstClick);
+          break;
+        }
+    }
+
+    const ans = possibleMoves.indexOf(secondClick) === -1 ? false : true;
+
+    return ans;
   };
-  */
-  const FinalizeMove = (firstClick, secondClick) => {};
 
   const clickable = (index) => {
     let clicked = configuration.config.filter((conf) => {
@@ -97,43 +124,65 @@ const Game = () => {
     });
 
     if (clicked.length > 0) {
-      return clicked[0][0];
+      return clicked[0];
     } else {
       return null;
     }
   };
 
-  const validateSecondClick = (index) => {
-    const new_array = configuration.config.map((conf) => {
-      if (conf[0] === clicks.firstClick) {
-        FinalizeMove(clicks.firstClick, index);
-        conf[0] = index; //move the item
+  const validateSecondClick = (i) => {
+    const possibleMoves = FinalizeMove(
+      clicks.firstClick,
+      i,
+      selected.selected[1],
+      selected.selected[2]
+    );
+    let newArrayWithUpdates = [...configuration.config];
+    if (possibleMoves) {
+      //which means the move is valid therefore we can proceed with the user's command
+      //therefore we have to update the configuaration as per user's demand
+      let deletable = false;
+      newArrayWithUpdates.forEach((conf) => {
+        if (conf[0] === i) {
+          //which means there exists an entity in the destination. Therefore we delete that entity first.
+          newArrayWithUpdates = newArrayWithUpdates.filter((configur) => {
+            return configur[0] != conf[0];
+          });
+          //the deleted item doesnt exist anymore
+          //now it is time to bring the piece to the destination which will be done by map
+          console.log(configuration.config);
+        }
+      });
+      const updatedConfig = newArrayWithUpdates.map((conf) => {
+        if (conf[0] === clicks.firstClick) {
+          conf[0] = i;
+        }
+        return conf;
+      });
+      console.log("jjjj");
+      setConfig({ config: updatedConfig });
+      if (turn === "white") {
+        //change the turn only if the move is valid
+        setTurn("black");
+      } else {
+        setTurn("white");
       }
-      return conf;
-    });
-
-    setConfig({ config: new_array }); //after the 2nd click is validated, we change the turn and remove the first and second clicks
-    setClicks({ firstClick: "", secondClick: "" });
-
-    if (turn == "black" && new_array !== configuration.config) {
-      setTurn("white");
-    } else {
-      setTurn("black");
+      console.log(configuration.config);
     }
-  };
-
-  const validMove = (index) => {
-    return true;
+    setSelected({ selected: "" });
+    setClicks({ firstClick: "" });
   };
 
   const handleClick = (i) => {
-    const first_click = clickable(i); //this should return index of valid click or null based on whether the piece is clikable (also considering the turn)
-    if (first_click) {
-      setClicks({ ...clicks, firstClick: first_click }); //setting valid click to first click
-    }
-
-    if (clicks.firstClick != "" && validMove(i)) {
+    if (clicks.firstClick !== "") {
+      //first click is set, so let's validate second click
       validateSecondClick(i);
+    } else {
+      //no clicks are set yet, therefore let's check whther the box is clickable based on whether the box contain the piece
+      if (clickable(i)) {
+        setSelected({ selected: clickable(i) });
+        setClicks({ firstClick: clickable(i)[0] });
+      }
     }
   };
 

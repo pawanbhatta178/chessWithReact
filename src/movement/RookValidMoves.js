@@ -1,23 +1,33 @@
-const RookValidMove = (position) => {
-  div = Math.trunc(position / 8); //base position of the line
-  rem = position % 8;
+const IndexToCoordinate = require("./IndexToCoordinate");
+const CoordinateToIndex = require("./CoordinateToIndex");
+
+const RookValidMoves = (position) => {
   let validDest = [];
+  const coordinate = IndexToCoordinate(position);
+  const { row, column } = coordinate;
 
-  for (let i = 0 - div; i < 8 - div; i++) {
-    let possible_dest = position + 8 * i;
-    validDest.indexOf(possible_dest) === -1
-      ? validDest.push(possible_dest)
-      : null;
-  }
-  let lower_sidemove = position - rem;
-  let higher_sidemove = lower_sidemove + 7;
+  const coordinates = [];
 
-  for (let i = lower_sidemove; i <= higher_sidemove; i++) {
-    validDest.indexOf(i) === -1 ? validDest.push(i) : null;
+  for (let i = 1; i < 8; i++) {
+    coordinates.push({ row: row, column: column + i });
+    coordinates.push({ row: row + i, column: column });
+    coordinates.push({ row: row, column: column - i });
+    coordinates.push({ row: row - i, column: column });
   }
-  //removing the current position since item cannot move to the same place. It has to move somehwre else.
-  var index = validDest.indexOf(position);
-  if (index !== -1) validDest.splice(index, 1);
+
+  const possible_coordinates = coordinates.filter((coordinate) => {
+    //filtering out impossible chess coordinates
+    return (
+      coordinate.row >= 0 &&
+      coordinate.row < 8 &&
+      coordinate.column >= 0 &&
+      coordinate.column < 8
+    );
+  });
+  possible_coordinates.forEach((coordinate) => {
+    validDest.push(CoordinateToIndex(coordinate));
+  });
   return validDest;
 };
+
 module.exports = RookValidMoves;

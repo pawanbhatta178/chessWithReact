@@ -27,6 +27,7 @@ const KnightValidMoves = (position) => {
   possible_coordinates.forEach((coordinate) => {
     validDest.push(CoordinateToIndex(coordinate));
   });
+  return validDest;
 };
 
 module.exports = KnightValidMoves;
