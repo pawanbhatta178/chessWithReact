@@ -89,6 +89,8 @@ const Game = () => {
     return clickedOnPiece;
   };
   */
+  const FinalizeMove = (firstClick, secondClick) => {};
+
   const clickable = (index) => {
     let clicked = configuration.config.filter((conf) => {
       return conf[0] === index && conf[2] === turn;
@@ -104,13 +106,16 @@ const Game = () => {
   const validateSecondClick = (index) => {
     const new_array = configuration.config.map((conf) => {
       if (conf[0] === clicks.firstClick) {
+        FinalizeMove(clicks.firstClick, index);
         conf[0] = index; //move the item
       }
       return conf;
     });
+
     setConfig({ config: new_array }); //after the 2nd click is validated, we change the turn and remove the first and second clicks
     setClicks({ firstClick: "", secondClick: "" });
-    if (turn == "black") {
+
+    if (turn == "black" && new_array !== configuration.config) {
       setTurn("white");
     } else {
       setTurn("black");
@@ -140,6 +145,7 @@ const Game = () => {
         color={color}
         configs={configuration.config}
       />
+      <div>{turn}</div>
     </>
   );
 };
