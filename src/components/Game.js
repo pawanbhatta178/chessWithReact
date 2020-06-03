@@ -42,11 +42,10 @@ const Game = () => {
   }
 
   const [board, setBoard] = useState(positions);
-  const [shade, setShade] = useState(false);
   const [turn, setTurn] = useState("black");
   const [clicks, setClicks] = useState({ firstClick: "", secondClick: "" });
   const [selected, setSelected] = useState({ selected: "" });
-  const [dead, setDead] = useState({ demised: [] });
+  const [moves, setMoves] = useState([]);
   const [configuration, setConfig] = useState({
     config: [
       [0, "Rook", "black", "br1"],
@@ -194,7 +193,9 @@ const Game = () => {
         color={color}
         configs={configuration.config}
       />
-      <div>{turn}</div>
+      <div style={{ position: "relative", right: "11em" }}>
+        Turn: {`${turn}`}
+      </div>
     </>
   );
 };
