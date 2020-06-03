@@ -5,7 +5,7 @@ import io from "socket.io-client";
 import InfoBar from "../InfoBar/InfoBar";
 import Input from "../Input/Input";
 import Messages from "../Messages/Messages";
-
+import Game from "../Game";
 let socket;
 
 export default function Chat({ location }) {
@@ -13,8 +13,8 @@ export default function Chat({ location }) {
   const [room, setRoom] = useState("");
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  // const ENDPOINT = "localhost:8080";
-  const ENDPOINT = "https://chat-mp.herokuapp.com";
+  //const ENDPOINT = "localhost:5000";
+  const ENDPOINT = "https://chess-mp.herokuapp.com/";
 
   useEffect(() => {
     const { name, room } = queryString.parse(location.search);
@@ -58,6 +58,7 @@ export default function Chat({ location }) {
           sendMessage={sendMessage}
         />
       </div>
+      <Game />
     </div>
   );
 }

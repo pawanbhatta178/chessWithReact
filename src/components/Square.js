@@ -1,5 +1,4 @@
 import React from "react";
-import BlackBishop from "../pieces/BlackBishop";
 import Piece from "react-chess-pieces";
 
 const style = {

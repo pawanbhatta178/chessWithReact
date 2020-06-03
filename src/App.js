@@ -5,11 +5,14 @@ import Chat from "./components/Chat/Chat";
 
 export default function App() {
   return (
-    <div>
-      <Router>
-        <Route path="/" exact component={Join} />
-        <Route path="/chat" component={Chat} />
-      </Router>
-    </div>
+    <>
+      <div>This website is still under construction...</div>
+      <div>
+        <Router>
+          <Route path="/" exact component={Join} />
+          <Route path="/chat" component={Chat} />
+        </Router>
+      </div>
+    </>
   );
 }
